@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О сервере - Bustix</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: Arial, sans-serif; 
+        }
+        
+        /* Основные стили */
+        body {
+            background-color: #050505;
+            color: white;
+        }
+        
+        /* Прелоадер - теперь корректно работает */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        #loader {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(255, 87, 34, 0.3);
+            border-top: 8px solid #ff5722;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        #loader-text {
+            color: white;
+            font-size: 18px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Контент - изначально скрыт */
+        #content {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* Остальные стили */
+        header { 
+            background-color: #000; 
+            color: white; 
+            padding: 15px 0; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        
+        .header-container { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        .logo { 
+            display: flex; 
+            align-items: center; 
+        }
+        
+        .logo h1 { 
+            font-size: 20px; 
+            font-weight: bold; 
+        }
+        
+        nav ul { 
+            display: flex; 
+            list-style: none; 
+        }
+        
+        nav ul li { 
+            margin-left: 20px; 
+        }
+        
+        nav ul li a { 
+            color: white; 
+            text-decoration: none; 
+            font-weight: bold; 
+            padding: 8px 15px; 
+            border-radius: 5px; 
+            transition: background 0.3s; 
+        }
+        
+        nav ul li a:hover { 
+            background: #333; 
+        }
+        
+        main { 
+            margin-top: 80px; 
+            padding: 40px 20px; 
+            max-width: 1200px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        
+        .content-wrapper {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        
+        .image-section {
+            flex: 1;
+        }
+        
+        .server-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        
+        .donators-section {
+            flex: 1;
+            background: rgba(30, 30, 30, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+        
+        .donators-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ff5722;
+            text-align: center;
+        }
+        
+        .donator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .donator-name {
+            font-weight: bold;
+        }
+        
+        .donator-amount {
+            color: #ff5722;
+        }
+        
+        .description {
+            color: white;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 30px auto 0;
+            text-align: center;
+        }
+        
+        h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 32px;
+            text-align: center;
+        }
+        
+        .donate-btn { 
+            background: #ff5722; 
+            color: white; 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            text-decoration: none; 
+            display: inline-block;
+            margin-top: 20px;
+        }
+        
+        .donate-btn:hover { 
+            background: #e64a19; 
+        }
+        
+        .server-ip {
+            background: rgba(255, 87, 34, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 500px;
+            border: 1px solid #ff5722;
+        }
+        
+        .server-ip-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #ff5722;
+        }
+        
+        .server-ip-address {
+            font-family: 'Courier New', monospace;
+            font-size: 22px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            .donators-section {
+                max-width: 100%;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Прелоадер -->
+    <div id="preloader">
+        <div id="loader"></div>
+        <div id="loader-text">Загрузка сервера Bustix...</div>
+    </div>
+
+    <!-- Основной контент (изначально скрыт) -->
+    <div id="content">
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <h1>Bustix</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="https://t.me/bastix12/6/105">Поддержка</a></li>
+                        <li><a href="https://t.me/bastix12/10/11">Правила</a></li>
+                        <li><a href="https://www.donationalerts.com/r/py78" class="donate-btn">Донат</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        
+        <main>
+            <h2>О нашем сервере</h2>
+            
+            <div class="server-ip">
+                <div class="server-ip-title">Подключиться к серверу:</div>
+                <div class="server-ip-address">f1.rustix.me:46788</div>
+            </div>
+            
+            <div class="content-wrapper">
+                <div class="image-section">
+                    <img src="bustixxx.jpg" alt="Изображение сервера Bustix" class="server-image">
+                </div>
+                
+                <div class="donators-section">
+                    <h3 class="donators-title">Топ донатеров</h3>
+                    <div class="donator">
+                        <span class="donator-name">Игрок_1</span>
+                        <span class="donator-amount">5000₽</span>
+                    </div>
+                    <div class="donator">
+                        <span class="donator-name">Игрок_2</span>
+                        <span class="donator-amount">3500₽</span>
+                    </div>
+                    <div class="donator">
+                        <span class="donator-name">Игрок_3</span>
+                        <span class="donator-amount">2500₽</span>
+                    </div>
+                    <div class="donator">
+                        <span class="donator-name">Игрок_4</span>
+                        <span class="donator-amount">2000₽</span>
+                    </div>
+                    <div class="donator">
+                        <span class="donator-name">Игрок_5</span>
+                        <span class="donator-amount">1500₽</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="description">Это крутой Гриферский сервер с уникальными возможностями. Присоединяйся!</p>
+            <div style="text-align: center;">
+                <a href="https://www.donationalerts.com/r/py78" class="donate-btn">Поддержать сервер</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // После полной загрузки страницы
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                // Плавно скрываем прелоадер
+                var preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                
+                // Плавно показываем контент
+                var content = document.getElementById('content');
+                content.style.opacity = '1';
+                
+                // Удаляем прелоадер из DOM после анимации
+                setTimeout(function() {
+                    preloader.style.display = 'none';
+                }, 500);
+            }, 2000); // 2 секунды задержки
+        });
+        
+        // Копирование IP адреса
+        document.addEventListener('DOMContentLoaded', function() {
+            const ipElement = document.querySelector('.server-ip-address');
+            if (ipElement) {
+                ipElement.addEventListener('click', function() {
+                    const textToCopy = this.textContent;
+                    navigator.clipboard.writeText(textToCopy).then(function() {
+                        const originalText = ipElement.textContent;
+                        ipElement.textContent = 'Скопировано!';
+                        setTimeout(function() {
+                            ipElement.textContent = originalText;
+                        }, 2000);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
